@@ -18,12 +18,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WeatherConfig {
-    public static final String ERROR_INVALID_TIME_VALUE = "Heure invalide : '%val%' n'est pas un nombre";
-    public static final String ERROR_INVALID_TIME_VALUE_2 = "Heure invalide : '%val%' doit être entre 0 et 23999";
-    public static final String MESSAGE_TIME_CHANGED = "Heure mise à %val%";
+    public static String ERROR_INVALID_TIME_TYPE = ChatColor.RED + "Heure invalide : '%val%' n'est pas un nombre";
+    public static String ERROR_INVALID_TIME_VALUE = ChatColor.RED + "Heure invalide : '%val%' doit être entre 0 et 23999";
+    public static String MESSAGE_TIME_CHANGED = ChatColor.GREEN + "Heure mise à %val%";
     public static String GUI_TIME_TITLE = "Quelle heure ? (heure * 1000)";
-    public static String GUI_TITLE = "La météo";
+    public static String GUI_TITLE = "Le menu météo";
     public static String ERROR_MESSAGE_INVENTORY_FULL = ChatColor.RED + "Ton inventaire est plein";
+
+    public static String WEATHERGUI_COMMAND_PERMISSION = "opus.weathergui.give";
+    public static String WEATHERGUI_OPEN_PERMISSION = "opus.weathergui.open";
 
     public static int CHANGE_DURATION_TICK = 300 * 20;
 
@@ -43,16 +46,11 @@ public class WeatherConfig {
 
     public static ItemStack GUI_ITEM_CLOCK = ItemStackUtils.setAppearance(new ItemStack(Material.CLOCK, 1), ChatColor.GREEN + "Regler l'heure", Arrays.asList(ChatColor.GRAY + "La valeur à donnée", ChatColor.GRAY + "est un nombre entre", ChatColor.GRAY + "0 et 23999 et ", ChatColor.GRAY + "correspond à " + ChatColor.ITALIC + ChatColor.WHITE + "heure * 1000"));
     public static int CLOCK_ITEM_POSITION = 4;
-
-    public static String WEATHERGUI_COMMAND_PERMISSION = "opus.weathergui.give";
-    public static String WEATHERGUI_OPEN_PERMISSION = "opus.weathergui.open";
     public static String NO_COMMAND_PERMISSION = ChatColor.RED + "Tu n'a pas la permission d'utiliser cet objet";
 
 
-    private final PaperConfig paperConfig;
-
     public WeatherConfig(WeatherPlugin plugin) throws InvalidConfigurationException {
-        paperConfig = new PaperConfig(plugin, "config.yml", false);
+        PaperConfig paperConfig = new PaperConfig(plugin, "config.yml", false);
 
         loadConfig(paperConfig);
         checkConfig();
@@ -74,23 +72,37 @@ public class WeatherConfig {
             config = paperConfig.newConfig();
         }
 
-        loadFromConfigOrSaveDefault(config, "change_tick_duration", CHANGE_DURATION_TICK, o -> CHANGE_DURATION_TICK = o);
+        loadFromConfigOrSaveDefault(config, "error_message_inventory_full", ERROR_MESSAGE_INVENTORY_FULL, o -> ERROR_MESSAGE_INVENTORY_FULL = o);
+        loadFromConfigOrSaveDefault(config, "error_invalid_time_value", ERROR_INVALID_TIME_TYPE, o -> ERROR_INVALID_TIME_TYPE = o);
+        loadFromConfigOrSaveDefault(config, "error_invalid_time_value", ERROR_INVALID_TIME_VALUE, o -> ERROR_INVALID_TIME_VALUE = o);
+        loadFromConfigOrSaveDefault(config, "message_time_changed", MESSAGE_TIME_CHANGED, o -> MESSAGE_TIME_CHANGED = o);
+        loadFromConfigOrSaveDefault(config, "gui_time_title", GUI_TIME_TITLE, o -> GUI_TIME_TITLE = o);
         loadFromConfigOrSaveDefault(config, "gui_title", GUI_TITLE, o -> GUI_TITLE = o);
+
         loadFromConfigOrSaveDefault(config, "weathergui_command_permission", WEATHERGUI_COMMAND_PERMISSION,
             o -> WEATHERGUI_COMMAND_PERMISSION = o);
         loadFromConfigOrSaveDefault(config, "weathergui_open_permission", WEATHERGUI_OPEN_PERMISSION,
             o -> WEATHERGUI_OPEN_PERMISSION = o);
-        loadFromConfigOrSaveDefault(config, "gui_title", GUI_TITLE, o -> GUI_TITLE = o);
-        loadFromConfigOrSaveDefault(config, "error_message_inventory_full", ERROR_MESSAGE_INVENTORY_FULL,
-            o -> ERROR_MESSAGE_INVENTORY_FULL = o);
+
+        loadFromConfigOrSaveDefault(config, "change_tick_duration", CHANGE_DURATION_TICK, o -> CHANGE_DURATION_TICK = o);
+
         loadFromConfigOrSaveDefault(config, "open_gui_item", OPEN_GUI_ITEM, o -> OPEN_GUI_ITEM = o);
+
         loadFromConfigOrSaveDefault(config, "gui_item_clear", GUI_ITEM_CLEAR, o -> GUI_ITEM_CLEAR = o);
-        loadFromConfigOrSaveDefault(config, "gui_item_rain", GUI_ITEM_RAIN, o -> GUI_ITEM_RAIN = o);
-        loadFromConfigOrSaveDefault(config, "gui_item_thunder", GUI_ITEM_STORM, o -> GUI_ITEM_STORM = o);
-        loadFromConfigOrSaveDefault(config, "rain_item_position", RAIN_ITEM_POSITION, o -> RAIN_ITEM_POSITION = o);
         loadFromConfigOrSaveDefault(config, "clear_item_position", CLEAR_ITEM_POSITION, o -> CLEAR_ITEM_POSITION = o);
+        loadFromConfigOrSaveDefault(config, "message_clear_executed", MESSAGE_CLEAR_EXECUTED, o -> MESSAGE_CLEAR_EXECUTED = o);
+
+        loadFromConfigOrSaveDefault(config, "gui_item_rain", GUI_ITEM_RAIN, o -> GUI_ITEM_RAIN = o);
+        loadFromConfigOrSaveDefault(config, "rain_item_position", RAIN_ITEM_POSITION, o -> RAIN_ITEM_POSITION = o);
+        loadFromConfigOrSaveDefault(config, "message_rain_executed", MESSAGE_RAIN_EXECUTED, o -> MESSAGE_RAIN_EXECUTED = o);
+
+        loadFromConfigOrSaveDefault(config, "gui_item_thunder", GUI_ITEM_STORM, o -> GUI_ITEM_STORM = o);
         loadFromConfigOrSaveDefault(config, "storm_item_position", STORM_ITEM_POSITION, o -> STORM_ITEM_POSITION = o);
+        loadFromConfigOrSaveDefault(config, "message_storm_executed", MESSAGE_STORM_EXECUTED, o -> MESSAGE_STORM_EXECUTED = o);
+
+        loadFromConfigOrSaveDefault(config, "gui_item_clock", GUI_ITEM_CLOCK, o -> GUI_ITEM_CLOCK = o);
         loadFromConfigOrSaveDefault(config, "clock_item_position", CLOCK_ITEM_POSITION, o -> CLOCK_ITEM_POSITION = o);
+        loadFromConfigOrSaveDefault(config, "no_command_permission", NO_COMMAND_PERMISSION, o -> NO_COMMAND_PERMISSION = o);
     }
 
     private void checkConfig() throws InvalidConfigurationException {

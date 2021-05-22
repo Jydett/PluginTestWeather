@@ -2,6 +2,7 @@ package fr.opus.weather;
 
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.SmartInventory;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -39,25 +40,25 @@ public class WeatherGUI {
 
                 if (CLOCK_ITEM_POSITION != -1) {
                     inv.set(CLOCK_ITEM_POSITION, ClickableItem.from(GUI_ITEM_CLOCK,
-                        ignored -> SmartInventory.anvilPrompt(plugin, GUI_TIME_TITLE, (res, pl) -> {
+                        ignored -> Bukkit.getScheduler().runTask(plugin, () -> SmartInventory.anvilPrompt(plugin, GUI_TIME_TITLE, Long.toString(p.getWorld().getTime()),(res, pl) -> {
                             if (res != null) {
-                                int value;
+                                long value;
                                 try {
-                                    value = Integer.parseInt(res);
+                                    value = Long.parseLong(res);
                                 } catch (NumberFormatException e) {
-                                    pl.sendMessage(ERROR_INVALID_TIME_VALUE.replace("%val%", res));
+                                    pl.sendMessage(ERROR_INVALID_TIME_TYPE.replace("%val%", res));
                                     return false;
                                 }
 
                                 if (value < 0 || value > 23999) {
-                                    pl.sendMessage(ERROR_INVALID_TIME_VALUE_2.replace("%val%", res));
+                                    pl.sendMessage(ERROR_INVALID_TIME_VALUE.replace("%val%", res));
                                     return false;
                                 }
                                 pl.getWorld().setTime(value);
                                 pl.sendMessage(MESSAGE_TIME_CHANGED.replace("%val%", res));
                             }
-                            return false;
-                        }).open(player)
+                            return true;
+                        }).open(ignored.getPlayer()))
                     ));
                 }
             }).build()

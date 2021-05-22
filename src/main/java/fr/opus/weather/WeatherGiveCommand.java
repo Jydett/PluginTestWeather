@@ -1,9 +1,11 @@
 package fr.opus.weather;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.HelpCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,5 +19,10 @@ public class WeatherGiveCommand extends BaseCommand {
         if (! player.getInventory().addItem(openGuiItem).isEmpty()) {
             player.sendMessage(WeatherConfig.ERROR_MESSAGE_INVENTORY_FULL);
         }
+    }
+
+    @HelpCommand
+    public void onHelp(CommandHelp help) {
+        help.showHelp();
     }
 }
