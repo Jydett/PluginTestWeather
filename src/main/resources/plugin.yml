@@ -1,0 +1,6 @@
+name: Weather
+version: ${project.version}
+main: fr.opus.weather.WeatherPlugin
+api-version: 1.16
+authors: [ Jydet ]
+description: Un petit gui qui gère la météo pour voir si Jydet sait coder
